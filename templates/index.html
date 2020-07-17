@@ -1,0 +1,142 @@
+<style>
+    body {
+        background: url("https://imgur.com/nZnL6xB.jpg") no-repeat center center fixed;
+         
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        background-size: cover;
+        -o-background-size: cover;
+    }
+</style>
+
+<!doctype html>
+<html lang="en">
+  <head xmlns="http://www.w3.org/1999/xhtml">
+    <meta charset="UTF-8">
+    <title>Car Price Predictor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <script src="https://kit.fontawesome.com/5f3f547070.js" crossorigin="anonymous"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Yatra+One&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+
+    <title>Car Price Predictor</title>
+  </head>
+  <body>
+    <nav class = "navbar">
+        <a href ="" class ="navbar-brand" style="font-family:Comic Sans MS;font-size:40px;color:red;"><b>Car Price Predictor</b></a>
+
+    </nav>
+    <br>
+    <div class = "container">
+        <div class ="row">
+            <div class = "col-md-7 mt-100">
+                <br>
+                <br>
+                <h1 class="text-warning display-4 mt-3" style="font-family:Comic Sans MS;font-size:40px;color:red;"><marquee direction = "DOWN" height = "400px"><b><i>Go, know it by entering you car details!! <br><br>Worried about the selling worth of your car? </i></b></marquee></h1>
+            </div>
+
+            <div class = "col-md-5 mt-100">
+                <h5 class = "text-center text-warning"><b>Fill in your car details</b></h5>
+
+                <form accept-charset="utf-8" name="Modelform" method="POST" action ='/predict'>
+                    <label class = "fas fa-building text-light"><b>  Select the company:</b> </label><br>
+                    <select class="selectpicker form-control" id="company" name="company" required="1"
+                                onchange="load_car_models(this.id,'car_models')">
+                            {% for company in companies %}
+                            <option value="{{ company }}">{{ company }}</option>
+                            {% endfor %}
+                    </select><br>
+
+                    <label class = "fa fa-car-alt text-light"><b> Select the model:</b> </label><br>
+                    <select class="selectpicker form-control" id="car_models" name="car_models" required="1">
+                    </select><br>
+
+                    <label class = "fas fa-calendar text-light"><b> Select the year of purchase:</b> </label><br>
+                    <select class="selectpicker form-control" id="year" name="year" required="1">
+                            {% for year in years %}
+                            <option value="{{ year }}">{{ year }}</option>
+                            {% endfor %}
+                    </select><br>
+
+                    <label class = "fas fa-gas-pump text-light"><b> Select the Fuel Type:</b> </label><br>
+                    <select class="selectpicker form-control" id="fuel_type" name="fuel_type" required="1">
+                            {% for fuel in fuel_types %}
+                            <option value="{{ fuel }}">{{ fuel }}</option>
+                            {% endfor %}
+                    </select><br>
+
+                    <label class="fas fa-road text-light"><b> Kilometers driven:</b> </label><br>
+                        <input type="number" class="form-control" id="kilo_driven" name="kilo_driven"
+                               placeholder="Enter the kilometres driven "> <br>
+
+                    <button  class="btn btn-info form-control" type = "submit">Predict Price</button><br> <br>
+                    {% if check==1 %}
+                        <h4 class="text-center text-light">Predicted price : ₹ {{price}} </h4>
+                    {% elif check==0 %}
+                        <h5 class="text-center text-light">Please provide correct credentials.</h5>
+                    {% endif %}
+
+                    <a href="/", class="btn btn-warning">RESET</a>
+
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <script>
+
+        function load_car_models(company_id,car_model_id)
+        {
+            var company=document.getElementById(company_id);
+            var car_model= document.getElementById(car_model_id);
+            console.log(company.value);
+            car_model.value="";
+            car_model.innerHTML="";
+            {% for company in companies %}
+                if( company.value == "{{ company }}")
+                {
+                    {% for model in car_models %}
+                        {% if company in model %}
+
+                            var newOption= document.createElement("option");
+                            newOption.value="{{ model }}";
+                            newOption.innerHTML="{{ model }}";
+                            car_model.options.add(newOption);
+                        {% endif %}
+                    {% endfor %}
+                }
+            {% endfor %}
+        }
+
+
+    </script>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+                integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+                crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+                integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+                crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+                integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+                crossorigin="anonymous"></script>
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+
+
+    <footer>
+        <p class = "text-center text-light" style = "padding:10px font-family:Comic Sans MS;font-size:10px;color:blue;">Copyright &copy; Anjali Agarwal</p>
+        <p class = "text-center text-light" style = "padding:10px"> <a target="_blank" href="https://github.com/ANJALIAGARWAL-IT"><i class="fab fa-github fa-lg contact-icon"></i></a>
+         <a target="_blank" href="https://in.linkedin.com/in/anjaliagarwal98"><i class="fab fa-linkedin fa-lg contact-icon"></i></a></p>
+    </footer>
+  </body>
+</html>
